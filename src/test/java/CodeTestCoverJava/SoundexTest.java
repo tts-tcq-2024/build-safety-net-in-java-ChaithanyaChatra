@@ -8,11 +8,28 @@ public class SoundexTest {
 
     @Test
     public void testEmptyString() {
-       //  assertTrue(Soundex.generateSoundex("")=="");
+        assertEquals("", Soundex.generateSoundex(""));
+    }
+    
+    @Test
+    public void testNullInput() {
+        assertEquals("", Soundex.generateSoundex(null));
     }
 
     @Test
     public void testSingleCharacter() {
-         //assertTrue(Soundex.generateSoundex("A")=="A000");
+    assertEquals("A000", Soundex.generateSoundex("A"));    
+    }
+
+    @Test
+    public void testNormalNames() {
+        assertEquals("A530", Soundex.generateSoundex("Ashcraft"));
+        assertEquals("C520", Soundex.generateSoundex("Carpenter"));
+    }
+    
+    @Test
+    public void testPaddingZeros() {
+        assertEquals("M650", Soundex.generateSoundex("Miller")); 
+        assertEquals("T400", Soundex.generateSoundex("Tarek")); 
     }
 }
