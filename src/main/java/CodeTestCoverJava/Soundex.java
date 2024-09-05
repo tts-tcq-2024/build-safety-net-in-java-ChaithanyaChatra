@@ -10,7 +10,7 @@ public class Soundex {
         StringBuilder soundex = new StringBuilder();
         soundex.append(Character.toUpperCase(name.charAt(0)));
 
-       char prevCode = '0';
+       char prevCode = getSoundexCode(name.charAt(0));
 
         for (int i = 1; i < name.length() && soundex.length() < 4; i++) {
             char code = getSoundexCode(name.charAt(i));
@@ -19,7 +19,6 @@ public class Soundex {
                 prevCode = code;
             }
         }
-
         while (soundex.length() < 4) {
             soundex.append('0');
         }
