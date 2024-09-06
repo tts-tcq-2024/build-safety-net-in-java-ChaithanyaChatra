@@ -2,47 +2,71 @@ package CodeTestCoverJava;
 
 public class Soundex {
 
-    public static String generateSoundex(String name) {
+    private static final Map<Character, Character> SOUND_EX_MAP = new HashMap<>();
+
+    static {
+        SOUND_EX_MAP.put('b', '1');
+        SOUND_EX_MAP.put('f', '1');
+        SOUND_EX_MAP.put('p', '1');
+        SOUND_EX_MAP.put('v', '1');
+        SOUND_EX_MAP.put('c', '2');
+        SOUND_EX_MAP.put('g', '2');
+        SOUND_EX_MAP.put('j', '2');
+        SOUND_EX_MAP.put('k', '2');
+        SOUND_EX_MAP.put('q', '2');
+        SOUND_EX_MAP.put('s', '2');
+        SOUND_EX_MAP.put('x', '2');
+        SOUND_EX_MAP.put('z', '2');
+        SOUND_EX_MAP.put('d', '3');
+        SOUND_EX_MAP.put('t', '3');
+        SOUND_EX_MAP.put('l', '4');
+        SOUND_EX_MAP.put('m', '5');
+        SOUND_EX_MAP.put('n', '5');
+        SOUND_EX_MAP.put('r', '6');
+    }
+
+    public static String encode(String name) {
         if (name == null || name.isEmpty()) {
             return "";
         }
 
+        name = name.toUpperCase();
         StringBuilder soundex = new StringBuilder();
-        soundex.append(Character.toUpperCase(name.charAt(0)));
 
-       char prevCode = getSoundexCode(name.charAt(0));
+        soundex.append(name.charAt(0));
 
-        for (int i = 1; i < name.length() && soundex.length() < 4; i++) {
-            char code = getSoundexCode(name.charAt(i));
-            if (code != '0' && code != prevCode) {
-                soundex.append(code);
-                prevCode = code;
+        // Previous encoded digit
+        char prevDigit = '0';
+
+        // Iterate over the remaining characters
+        for (int i = 1; i < name.length(); i++) {
+            char c = name.charAt(i);
+
+            // Skip specific characters
+            if ("AEIOUYHW".indexOf(c) >= 0) {
+                continue;
+            }
+
+            // Get the encoded digit for the consonant
+            char encodedDigit = SOUND_EX_MAP.getOrDefault(c, '0');
+
+            // Avoid repeating digits
+            if (encodedDigit != prevDigit) {
+                soundex.append(encodedDigit);
+                prevDigit = encodedDigit;
+            }
+
+            // Stop if we have the first letter and three digits
+            if (soundex.length() == 4) {
+                break;
             }
         }
+
+        // Pad with zeros if necessary
         while (soundex.length() < 4) {
             soundex.append('0');
         }
 
         return soundex.toString();
-    }
-
-    private static char getSoundexCode(char c) {
-        c = Character.toUpperCase(c);
-        switch (c) {
-            case 'B': case 'F': case 'P': case 'V':
-                return '1';
-            case 'C': case 'G': case 'J': case 'K': case 'Q': case 'S': case 'X': case 'Z':
-                return '2';
-            case 'D': case 'T':
-                return '3';
-            case 'L':
-                return '4';
-            case 'M': case 'N':
-                return '5';
-            case 'R':
-                return '6';
-            default:
-                return '0'; // For A, E, I, O, U, H, W, Y
-        }
     }
 }
