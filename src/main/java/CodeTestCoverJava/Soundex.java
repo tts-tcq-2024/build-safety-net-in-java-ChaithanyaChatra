@@ -1,72 +1,101 @@
 package CodeTestCoverJava;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Soundex {
 
-    private static final Map<Character, Character> SOUND_EX_MAP = new HashMap<>();
+    private static final Map<Character, Character> soundexMap = new HashMap<>();
 
     static {
-        SOUND_EX_MAP.put('b', '1');
-        SOUND_EX_MAP.put('f', '1');
-        SOUND_EX_MAP.put('p', '1');
-        SOUND_EX_MAP.put('v', '1');
-        SOUND_EX_MAP.put('c', '2');
-        SOUND_EX_MAP.put('g', '2');
-        SOUND_EX_MAP.put('j', '2');
-        SOUND_EX_MAP.put('k', '2');
-        SOUND_EX_MAP.put('q', '2');
-        SOUND_EX_MAP.put('s', '2');
-        SOUND_EX_MAP.put('x', '2');
-        SOUND_EX_MAP.put('z', '2');
-        SOUND_EX_MAP.put('d', '3');
-        SOUND_EX_MAP.put('t', '3');
-        SOUND_EX_MAP.put('l', '4');
-        SOUND_EX_MAP.put('m', '5');
-        SOUND_EX_MAP.put('n', '5');
-        SOUND_EX_MAP.put('r', '6');
+        // Initialize the Soundex map
+        soundexMap.put('B', '1');
+        soundexMap.put('F', '1');
+        soundexMap.put('P', '1');
+        soundexMap.put('V', '1');
+        soundexMap.put('C', '2');
+        soundexMap.put('G', '2');
+        soundexMap.put('J', '2');
+        soundexMap.put('K', '2');
+        soundexMap.put('Q', '2');
+        soundexMap.put('S', '2');
+        soundexMap.put('X', '2');
+        soundexMap.put('Z', '2');
+        soundexMap.put('D', '3');
+        soundexMap.put('T', '3');
+        soundexMap.put('L', '4');
+        soundexMap.put('M', '5');
+        soundexMap.put('N', '5');
+        soundexMap.put('R', '6');
     }
 
-    public static String encode(String name) {
-        if (name == null || name.isEmpty()) {
+    public static String generateSoundex(String name) {
+        if (isInvalidInput(name)) {
             return "";
         }
 
-        name = name.toUpperCase();
         StringBuilder soundex = new StringBuilder();
+        soundex.append(Character.toUpperCase(name.charAt(0)));
+        processCharsForSoundex(name, soundex);
 
-        soundex.append(name.charAt(0));
+        return padSoundex(soundex);
+    }
 
-        // Previous encoded digit
-        char prevDigit = '0';
+    private static boolean isInvalidInput(String name) {
+        return name == null || name.isEmpty();
+    }
 
-        // Iterate over the remaining characters
-        for (int i = 1; i < name.length(); i++) {
-            char c = name.charAt(i);
+    private static void processCharsForSoundex(String name, StringBuilder soundex) {
+        char prevCode = '0'; 
+        char prevChar = Character.toUpperCase(name.charAt(0)); 
 
-            // Skip specific characters
-            if ("AEIOUYHW".indexOf(c) >= 0) {
-                continue;
-            }
+        for (int i = 1; i < name.length() && soundex.length() < 4; i++) {
+            char currentChar = Character.toUpperCase(name.charAt(i));
+            processChar(soundex, currentChar, prevChar, prevCode);
+            prevCode = getSoundexCode(currentChar);
+            prevChar = currentChar; 
+        }
+    }
 
-            // Get the encoded digit for the consonant
-            char encodedDigit = SOUND_EX_MAP.getOrDefault(c, '0');
-
-            // Avoid repeating digits
-            if (encodedDigit != prevDigit) {
-                soundex.append(encodedDigit);
-                prevDigit = encodedDigit;
-            }
-
-            // Stop if we have the first letter and three digits
-            if (soundex.length() == 4) {
-                break;
-            }
+    private static void processChar(StringBuilder soundex, char currentChar, char prevChar, char prevCode) {
+        if (shouldSkipCharacter(currentChar, prevChar)) {
+            return;
         }
 
-        // Pad with zeros if necessary
+        char code = getSoundexCode(currentChar);
+        appendCodeIfValid(soundex, code, prevCode);
+    }
+
+    private static boolean shouldSkipCharacter(char currentChar, char prevChar) {
+        return isIgnoredCharacter(currentChar) && !isVowel(prevChar);
+    }
+
+    private static boolean isIgnoredCharacter(char currentChar) {
+        return currentChar == 'H' || currentChar == 'W';
+    }
+
+    private static boolean isVowel(char c) {
+        return "AEIOUY".indexOf(c) >= 0;
+    }
+
+    private static void appendCodeIfValid(StringBuilder soundex, char code, char prevCode) {
+        if (isValidCode(code, prevCode) && soundex.length() < 4) {
+            soundex.append(code);
+        }
+    }
+
+    private static boolean isValidCode(char code, char prevCode) {
+        return code != '0' && code != prevCode;
+    }
+
+    private static char getSoundexCode(char c) {
+        return soundexMap.getOrDefault(c, '0');
+    }
+
+    private static String padSoundex(StringBuilder soundex) {
         while (soundex.length() < 4) {
             soundex.append('0');
         }
-
         return soundex.toString();
     }
 }
