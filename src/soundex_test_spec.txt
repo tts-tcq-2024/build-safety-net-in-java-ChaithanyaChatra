@@ -1,0 +1,120 @@
+Test Suite: Soundex Algorithm
+
+Test Case 1: Valid Name with Regular Characters
+- Input: "Smith"
+- Expected Output: "S530"
+  - Explanation: 
+    - 'S' maps to 'S'
+    - 'M' maps to '5'
+    - 'I' is a vowel, so it's ignored.
+    - 'T' maps to '3'
+    - 'H' is ignored as it's preceded by a consonant 'T'
+  - Final result: "S530"
+
+Test Case 2: Valid Name with Repeated Consonants
+- Input: "Parker"
+- Expected Output: "P620"
+  - Explanation: 
+    - 'P' maps to 'P'
+    - 'A' is a vowel, so it's ignored.
+    - 'R' maps to '6'
+    - 'K' maps to '2'
+    - 'E' is a vowel, so it's ignored.
+    - 'R' is repeated but ignored due to no change in code.
+  - Final result: "P620"
+
+Test Case 3: Single Character Name
+- Input: "A"
+- Expected Output: "A000"
+  - Explanation: Single letter names should be padded with three zeros.
+  - Final result: "A000"
+
+Test Case 4: Empty String
+- Input: ""
+- Expected Output: ""
+  - Explanation: Empty input should return an empty string.
+  - Final result: ""
+
+Test Case 5: Null Input
+- Input: null
+- Expected Output: ""
+  - Explanation: Null input should return an empty string.
+  - Final result: ""
+
+Test Case 6: Name with Special Characters (spaces, digits, etc.)
+- Input: "John 123"
+- Expected Output: "J500"
+  - Explanation: 
+    - The space and digits are ignored.
+    - 'J' maps to 'J'
+    - 'O' is a vowel and ignored.
+    - 'H' is ignored (because it follows a consonant 'O').
+    - 'N' maps to '5'.
+    - '1', '2', '3' are ignored.
+  - Final result: "J500"
+
+Test Case 7: Name with Ignored Characters (H, W)
+- Input: "Whittaker"
+- Expected Output: "W362"
+  - Explanation:
+    - 'W' is ignored because it’s not preceded by a vowel.
+    - 'H' is ignored because it follows a consonant.
+    - 'I' is a vowel and ignored.
+    - 'T' maps to '3'
+    - 'T' repeats but is ignored.
+    - 'A' is a vowel and ignored.
+    - 'K' maps to '2'
+    - 'E' is a vowel and ignored.
+    - 'R' maps to '6'.
+  - Final result: "W362"
+
+Test Case 8: Name with Multiple Consecutive Vowels
+- Input: "Aurelia"
+- Expected Output: "A640"
+  - Explanation:
+    - 'A' maps to 'A'
+    - 'U' is a vowel and ignored.
+    - 'R' maps to '6'
+    - 'E' is a vowel and ignored.
+    - 'L' maps to '4'
+    - 'I' is a vowel and ignored.
+    - 'A' is a vowel and ignored.
+  - Final result: "A640"
+
+Test Case 9: Name shorter than 4 Characters
+- Input: "Al"
+- Expected Output: "A400"
+  - Explanation:
+    - 'A' maps to 'A'
+    - 'L' maps to '4'
+    - The name is too short, so it’s padded with a zero.
+  - Final result: "A400"
+
+Test Case 10: Case Insensitivity
+- Input: "barker"
+- Expected Output: "B620"
+  - Explanation: The method should be case-insensitive.
+  - Final result: "B620"
+
+Test Case 11: Name with Multiple Similar Characters
+- Input: "Ssssss"
+- Expected Output: "S230"
+  - Explanation:
+    - 'S' maps to 'S'
+    - The repeated 'S' is ignored since it maps to the same code '2'.
+    - The final result should be "S230", since the code '2' is appended after the first 'S'.
+  - Final result: "S230"
+
+Test Case 12: Name with Numbers and Special Characters
+- Input: "O'Connor"
+- Expected Output: "O260"
+  - Explanation:
+    - The apostrophe is ignored.
+    - 'O' maps to 'O'
+    - 'C' maps to '2'
+    - 'O' is a vowel and ignored.
+    - 'N' maps to '5'
+    - 'N' is repeated and ignored.
+    - 'O' is a vowel and ignored.
+    - 'R' maps to '6'
+  - Final result: "O260"
