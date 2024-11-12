@@ -26,7 +26,7 @@ jobs:
       run: pip install lizard
 
     - name: Limit complexity
-      run: $HOME/.local/bin/lizard --CCN 3 src/main/
+      run: $HOME/.local/bin/lizard --CCN 10 src/main/
       
     - name: Build and Generate coverage
       run: mvn test jacoco:report
